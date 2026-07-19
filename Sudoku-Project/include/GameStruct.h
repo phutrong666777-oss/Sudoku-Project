@@ -180,8 +180,32 @@ private:
 
 public:
     SudokuCell();
-    void init(int r, int c, float x, float y, float size, sf::Font& font);
-    void updateVisuals(int value, bool isInitial);
+    void init(int r, int c, float x, float y, float size, sf::Font& font) {
+        row = r;
+        col = c;
+
+        box.setPosition(sf::Vector2f(x, y));
+        box.setSize(sf::Vector2f(size, size));
+        box.setFillColor(sf::Color::White);
+        box.setOutlineColor(sf::Color(213, 155, 194));
+        box.setOutlineThickness(1.0f);
+
+        valueText.setFont(font);
+        valueText.setCharacterSize(static_cast<int>(size * 0.6f));
+        valueText.setString("");
+    }
+    void updateVisuals(int value, bool isInitial) {
+        if (value == 0) valueText.setString("");
+        else {
+            valueText.setString(std::to_string(value));
+            valueText.setFillColor(isInitial ? sf::Color:: Black : sf::Color::Blue);
+            sf::FloatRect textRect = valueText.getLocalBounds();
+            valueText.setOrigin(sf::Vector2f(textRect.position.x + textRect.size.x / 2.0f,
+                                            textRect.position.y + textRect.size.y / 2.0f));
+            valueText.setPosition(sf::Vector2f(box.getPosition().x + box.getSize().x /2.0f,
+                                  box.getPosition().y + box.getSize().y / 2.0f)); 
+        }
+    }
     void setSelected(bool state);
     
     void draw(sf::RenderWindow& window);
@@ -233,7 +257,12 @@ public:
 
     void processEvents();
     void update(int deltaTime);
-    void render();
+    void render() {
+        window.clear(sf::Color(213, 155, 194));//tui lựa màu này làm nền cho dịu mắt
+        if (currentScene != NULL) currentScene->draw(window);
+
+        window.display();
+    }
 
     // Scene & State Management
     void changeState(GameState newState);
