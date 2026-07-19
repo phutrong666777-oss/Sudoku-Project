@@ -179,6 +179,12 @@ private:
     bool isSelected;
 
 public:
+    float getCellSize() const {
+        return box.getSize().x;
+    }
+    sf::Vector2f getPosition() const {
+        return box.getPosition();
+    }
     SudokuCell();
     void init(int r, int c, float x, float y, float size, sf::Font& font) {
         row = r;
@@ -206,9 +212,14 @@ public:
                                   box.getPosition().y + box.getSize().y / 2.0f)); 
         }
     }
-    void setSelected(bool state);
+    void setSelected(bool state) {
+        box.setFillColor(state ? sf::Color(173, 216, 230) : sf::Color::White);
+    }
     
-    void draw(sf::RenderWindow& window);
+    void draw(sf::RenderWindow& window) {
+        window.draw(box);
+        if (!valueText.getString().isEmpty()) window.draw(valueText);
+    }
 };
 
 class BoardUI : public UIElement {
@@ -217,8 +228,46 @@ private:
     SudokuBoard* logicBoard; // Con trỏ liên kết với logic của Duy Hiếu
 
 public:
-    BoardUI(SudokuBoard* board, sf::Font& font);
-    void draw(sf::RenderWindow& window) override; // Vẽ toàn bộ lưới và gọi cells[i][j].draw()
+    BoardUI(SudokuBoard* board, sf::Font& font) {
+        float cellSize = 50.0f;
+        float startX = (800.0f - (cellSize * 9)) / 2.0f;
+        float startY = (600.0f - (cellSize * 9)) / 2.0f;
+
+        for (int i = 0; i < 9; ++i) {
+            for (int j = 0; j < 9; ++j) {
+                float x = startX + j * cellSize;
+                float y = startY + i * cellSize;
+
+                cells[i][j].init(i, j, x, y, cellSize, font);
+
+                cells[i][j].updateVisuals(logicBoard->getCell(i,j), logicBoard->isInitialCell(i, j));
+            }
+        }
+    }
+    void draw(sf::RenderWindow& window) {
+        for (int i = 0; i < 9; ++i) {
+            for (int j = 0; j < 9; ++j){
+                cells[i][j].draw(window);
+            }
+        }
+
+        float cellSize = cells[0][0].getCellSize();
+        float startX = cells[0][0].getPosition().x;
+        float startY = cells[0][0].getPosition().y;
+        float boardSize = cellSize * 9;
+
+        for (int i = 0; i <= 9; i += 3) {
+            sf::RectangleShape hLine(sf::Vector2f(boardSize, 4.0f));
+            hLine.setFillColor(sf::Color::Black);
+            hLine.setPosition(sf::Vector2f(startX, startY + (i* cellSize) - 2.0f));
+            window.draw(hLine);
+
+            sf::RectangleShape vLine(sf::Vector2f(boardSize, 4.0f));
+            hLine.setFillColor(sf::Color::Black);
+            hLine.setPosition(sf::Vector2f(startX + (i* cellSize) - 2.0f, startY));
+            window.draw(vLine);
+        }
+    } // Vẽ toàn bộ lưới và gọi cells[i][j].draw()
     void handleInput(sf::Event& event, sf::RenderWindow& window) override; // Xử lý chuột/phím chọn ô
 };
 
@@ -291,5 +340,4 @@ int main() {
     return 0;
 }
 */
-
 #endif
