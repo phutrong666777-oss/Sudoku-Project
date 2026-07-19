@@ -2,6 +2,10 @@
 #define GAME_ARCHITECTURE_H
 
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <cstring>
+#include <algorithm>
 #include <SFML/Graphics.hpp> // Dành cho Thành viên 3
 
 // =====================================================================
@@ -37,7 +41,21 @@ private:
     int recordCount;
 
 public:
-    GameplayManager();
+    GameplayManager() {
+        timer = 0;
+        mistakeCounter = 0;
+        hintsLeft = 3;
+        currentScore = 0;
+        currentDifficulty = EASY;
+        isPaused = false;
+        recordCount = 0;
+
+        for (int i = 0; i < 10; ++i) {
+            leaderboard[i].time = 0;
+            leaderboard[i].score = 0;
+            leaderboard[i].playerName[0] = '\0';
+        }   
+    }
     
     void updateTimer(int deltaTime);
     void addMistake();
@@ -45,11 +63,60 @@ public:
     void addPoints(int points);
     
     void togglePause();
-    bool checkLoseCondition(); // Trả về true nếu mistakeCounter >= MAX_MISTAKES
+    bool checkLoseCondition() {
+        return mistakeCounter > MAX_MISTAKES;
+    } // Trả về true nếu mistakeCounter >= MAX_MISTAKES
+
+    //Hàm phụ để save leaderboard
+    bool compareRecords(const GameplayManager::Record& a, const GameplayManager::Record& b) {
+        return a.score == b.score ? a.time < b.time : a.score > b.score ;
+    }
     
     // Quản lý Leaderboard
-    void saveToLeaderboard(const char* name, int time, int score);
-    void loadLeaderboard(); // Đọc từ file
+    void saveToLeaderboard(const char* name, int time, int score) {
+        if (recordCount < 10) {
+            strcpy(leaderboard[recordCount].playerName, name);
+            leaderboard[recordCount].time = time;
+            leaderboard[recordCount].score = score;
+            recordCount++;
+        }
+        else {
+            strcpy(leaderboard[9].playerName, name);
+            leaderboard[9].time = time;
+            leaderboard[9].score = score;
+        }
+        std::sort(leaderboard, leaderboard + recordCount, compareRecords);
+        
+        std::ofstream file ("leaderboard.txt");
+        if (file.is_open()) {
+            for (int i = 0; i < recordCount; ++i) {
+                file << leaderboard[i].playerName << " "
+                     << leaderboard[i].time << " "
+                     << leaderboard[i].score << "\n";
+            }
+            file.close();
+        }
+        else std::cout << "Khong the ghi file\n";
+    }
+    void loadLeaderboard() {
+        std::ifstream file("leaderboard.txt");
+        recordCount = 0;
+
+        if (file.is_open()) {
+            char name[50];
+            int time, score;
+
+            while (file >> name >> time >> score && recordCount < 10) {
+                strcpy(leaderboard[recordCount].playerName , name);
+                leaderboard[recordCount].time = time;
+                leaderboard[recordCount].score = score;
+                recordCount++;
+            }
+        }
+        else {
+            std::cout << "chua co file\n";
+        }
+    } // Đọc từ file
 };
 
 // =====================================================================
