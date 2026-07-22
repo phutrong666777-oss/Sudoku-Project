@@ -144,7 +144,9 @@ public:
     void run(); 
 
     // [Phú Trọng]: Hàm Update chung (gọi update của Board, Timer, UI...)
-    void update();
+    void update(){
+        
+    };
     
     // [Phú Trọng]: Quản lý luồng trạng thái/Scene (Menu <-> Playing <-> GameOver)
     void changeState(GameState newState);
