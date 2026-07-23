@@ -107,7 +107,8 @@ private:
 
 public:
     UIManager();
-    
+
+    void update(float dt = 0.016f);
     // --- [Vỹ An & Đăng Khôi]: RENDER CÁC MÀN HÌNH CHÍNH ---
     void drawMenuScreen();
     void drawPauseScreen();
