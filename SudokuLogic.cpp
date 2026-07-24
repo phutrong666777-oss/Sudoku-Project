@@ -1,5 +1,4 @@
-#include "Game_Architecture.h"
-#include <bits/stdc++.h>
+#include "SudokuLogic.h"
 
 // =========================================================================
 // THỰC THI LỚP SudokuCell
@@ -143,10 +142,10 @@ void SudokuBoard::generatePuzzle(Difficulty diff) {
     removeCells(cellsToRemove);
 }
 
-std::string SudokuBoard::serializeBoardData() {
+string SudokuBoard::serializeBoardData() {
     // Chuyển 81 ô thành 1 chuỗi dài 81 ký tự để lưu file. 
     // Format: '0' -> ô trống, '1'-'9' -> có số.
-    std::string data = "";
+    string data = "";
     for (int r = 0; r < 9; ++r) {
         for (int c = 0; c < 9; ++c) {
             data += std::to_string(grid[r][c].getValue());
@@ -155,7 +154,7 @@ std::string SudokuBoard::serializeBoardData() {
     return data;
 }
 
-void SudokuBoard::loadBoardData(const std::string& data) {
+void SudokuBoard::loadBoardData(const string& data) {
     if (data.length() != 81) return; // Lỗi data
     
     int index = 0;
