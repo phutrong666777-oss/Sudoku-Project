@@ -5,6 +5,8 @@
 #include <SFML/Window.hpp>
 #include <string>
 #include <iostream>
+#include <iomanip>
+#include <sstream>
 
 // Base Class Interface từ architecture gốc
 class IGameObject {
