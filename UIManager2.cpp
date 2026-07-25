@@ -1,6 +1,4 @@
 #include "UIManager2.h"
-#include <iomanip>
-#include <sstream>
 
 // IMPLEMENTATION: BUTTON
 
