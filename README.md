@@ -156,4 +156,27 @@ cd Sudoku-Project
 **2. Install SFML**
 
 ```bash
-# Ubuntu /
+# Ubuntu / Debian
+sudo apt install libsfml-dev g++
+
+# macOS
+brew install sfml
+```
+
+On Windows: download SFML from [sfml-dev.org](https://www.sfml-dev.org/download.php), configure the `include`/`lib` paths, and copy the SFML `.dll` files next to the `.exe`.
+
+**3. Build**
+
+```bash
+g++ -std=c++17 -I include source/*.cpp -o Sudoku \
+    -lsfml-graphics -lsfml-window -lsfml-audio -lsfml-system
+```
+
+**4. Run**
+
+```bash
+./Sudoku        # Linux / macOS
+Sudoku.exe      # Windows
+```
+
+> ⚠️ Run the game **from the project root directory** so the program can find the `assets/` folder and the `records.txt` and `sudoku_save.json` files.
